@@ -61,7 +61,7 @@ class SPStorkPresentationController: UIPresentationController, UIGestureRecogniz
         return (statusBarHeight < 25) ? 30 : statusBarHeight
     }
     
-    private let alpha: CGFloat =  0.51
+    private let alpha: CGFloat =  0
     var cornerRadius: CGFloat = 10
     
     private var scaleForPresentingView: CGFloat {
@@ -133,7 +133,7 @@ class SPStorkPresentationController: UIPresentationController, UIGestureRecogniz
         self.snapshotViewContainer.frame = initialFrame
         self.updateSnapshot()
         self.snapshotView?.layer.cornerRadius = 0
-        self.backgroundView.backgroundColor = UIColor.black
+        self.backgroundView.backgroundColor = UIColor.clear
         self.backgroundView.translatesAutoresizingMaskIntoConstraints = false
         containerView.insertSubview(self.backgroundView, belowSubview: self.snapshotViewContainer)
         NSLayoutConstraint.activate([
@@ -145,9 +145,9 @@ class SPStorkPresentationController: UIPresentationController, UIGestureRecogniz
         
         let transformForSnapshotView = CGAffineTransform.identity
             .translatedBy(x: 0, y: -snapshotViewContainer.frame.origin.y)
-            .translatedBy(x: 0, y: self.topSpace)
+//            .translatedBy(x: 0, y: self.topSpace)
             .translatedBy(x: 0, y: -snapshotViewContainer.frame.height / 2)
-            .scaledBy(x: scaleForPresentingView, y: scaleForPresentingView)
+//            .scaledBy(x: scaleForPresentingView, y: scaleForPresentingView)
             .translatedBy(x: 0, y: snapshotViewContainer.frame.height / 2)
         
         self.addCornerRadiusAnimation(for: self.snapshotView, cornerRadius: self.cornerRadius, duration: 0.6)
@@ -166,6 +166,7 @@ class SPStorkPresentationController: UIPresentationController, UIGestureRecogniz
             
             containerView.insertSubview(snapshotView, aboveSubview: self.backgroundView)
             snapshotView.frame = initialFrame
+            snapshotView.backgroundColor = .clear
             snapshotView.transform = transformForSnapshotView
             snapshotView.alpha = 1 - self.alpha
             snapshotView.layer.cornerRadius = self.cornerRadius
@@ -200,12 +201,12 @@ class SPStorkPresentationController: UIPresentationController, UIGestureRecogniz
     
     override func presentationTransitionDidEnd(_ completed: Bool) {
         super.presentationTransitionDidEnd(completed)
-        guard let containerView = containerView else { return }
+        guard let _ = containerView else { return }
         self.updateSnapshot()
         self.presentedViewController.view.frame = self.frameOfPresentedViewInContainerView
         self.snapshotViewContainer.transform = .identity
-        self.snapshotViewContainer.translatesAutoresizingMaskIntoConstraints = false
-        self.snapshotViewContainer.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
+//        self.snapshotViewContainer.translatesAutoresizingMaskIntoConstraints = false
+//        self.snapshotViewContainer.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
         self.updateSnapshotAspectRatio()
         
         if self.tapAroundToDismissEnabled {
@@ -232,9 +233,9 @@ class SPStorkPresentationController: UIPresentationController, UIGestureRecogniz
         
         let initialTransform = CGAffineTransform.identity
             .translatedBy(x: 0, y: -initialFrame.origin.y)
-            .translatedBy(x: 0, y: self.topSpace)
+//            .translatedBy(x: 0, y: self.topSpace)
             .translatedBy(x: 0, y: -initialFrame.height / 2)
-            .scaledBy(x: scaleForPresentingView, y: scaleForPresentingView)
+//            .scaledBy(x: scaleForPresentingView, y: scaleForPresentingView)
             .translatedBy(x: 0, y: initialFrame.height / 2)
         
         self.snapshotViewTopConstraint?.isActive = false
@@ -266,7 +267,7 @@ class SPStorkPresentationController: UIPresentationController, UIGestureRecogniz
             let snapshotRoundedView = UIView()
             snapshotRoundedView.layer.cornerRadius = self.cornerRadius
             snapshotRoundedView.layer.masksToBounds = true
-            snapshotRoundedView.backgroundColor = UIColor.black.withAlphaComponent(self.alpha)
+            snapshotRoundedView.backgroundColor = UIColor.clear.withAlphaComponent(self.alpha)
             containerView.insertSubview(snapshotRoundedView, aboveSubview: snapshotView)
             snapshotRoundedView.frame = initialFrame
             snapshotRoundedView.transform = initialTransform
@@ -531,13 +532,13 @@ extension SPStorkPresentationController {
             snapshotView?.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         }
         self.gradeView.removeFromSuperview()
-        self.gradeView.backgroundColor = UIColor.black
+        self.gradeView.backgroundColor = UIColor.clear
         self.snapshotView!.addSubview(self.gradeView)
         self.constraints(view: self.gradeView, to: self.snapshotView!)
     }
     
     private func updateSnapshotAspectRatio() {
-        guard let containerView = containerView, snapshotViewContainer.translatesAutoresizingMaskIntoConstraints == false else { return }
+        guard let _ = containerView, snapshotViewContainer.translatesAutoresizingMaskIntoConstraints == false else { return }
         
         self.snapshotViewTopConstraint?.isActive = false
         self.snapshotViewWidthConstraint?.isActive = false
@@ -546,8 +547,8 @@ extension SPStorkPresentationController {
         let snapshotReferenceSize = presentingViewController.view.frame.size
         let aspectRatio = snapshotReferenceSize.width / snapshotReferenceSize.height
         
-        self.snapshotViewTopConstraint = snapshotViewContainer.topAnchor.constraint(equalTo: containerView.topAnchor, constant: self.topSpace)
-        self.snapshotViewWidthConstraint = snapshotViewContainer.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: scaleForPresentingView)
+//        self.snapshotViewTopConstraint = snapshotViewContainer.topAnchor.constraint(equalTo: containerView.topAnchor, constant: self.topSpace)
+//        self.snapshotViewWidthConstraint = snapshotViewContainer.widthAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: scaleForPresentingView)
         self.snapshotViewAspectRatioConstraint = snapshotViewContainer.widthAnchor.constraint(equalTo: snapshotViewContainer.heightAnchor, multiplier: aspectRatio)
         
         self.snapshotViewTopConstraint?.isActive = true
